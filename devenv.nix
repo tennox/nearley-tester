@@ -26,7 +26,7 @@
     # yd.exec = ''yarn dev'';
   };
 
-  difftastic.enable = true; #  https://devenv.sh/integrations/difftastic/
+  difftastic.enable = true; # https://devenv.sh/integrations/difftastic/
 
   pre-commit.hooks = {
     # Docs: https://devenv.sh/pre-commit-hooks/
