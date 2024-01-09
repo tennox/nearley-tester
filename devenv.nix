@@ -14,11 +14,14 @@
   packages = with pkgs; [
     # Search for packages: https://search.nixos.org/packages?channel=unstable&query=cowsay
     # (note: this searches on unstable channel, be aware your nixpkgs flake input might be on a release channel)
-    gcc # needed for some npm packages
 
-    # remove whichever you don't need
+    # Package managers
     yarn
     latest.nodePackages.pnpm
+
+    # Misc
+    gcc # needed for some npm packages
+    nodePackages.typescript-language-server # many editors benefit from this
   ];
 
   scripts = {
