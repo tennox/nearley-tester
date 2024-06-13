@@ -6,27 +6,26 @@
     nix.enable = true;
     javascript = {
       enable = true; # source: https://github.com/cachix/devenv/blob/main/src/modules/languages/javascript.nix
-      #corepack.enable = true; # shim for npm/yarn/pnpm - https://github.com/nodejs/corepack#readme
-      #- but questionable: https://github.com/cachix/devenv/pull/475#issuecomment-1571879078
+      # remove whichever you don't need
+      npm.enable = true;
+      pnpm.enable = true;
+      yarn.enable = true;
     };
+    typescript.enable = true;
+    deno.enable = true;
   };
 
   packages = with pkgs; [
     # Search for packages: https://search.nixos.org/packages?channel=unstable&query=cowsay
     # (note: this searches on unstable channel, be aware your nixpkgs flake input might be on a release channel)
 
-    # Package managers
-    yarn
-    latest.nodePackages.pnpm
-
-    # Misc
     gcc # needed for some npm packages
     nodePackages.typescript-language-server # many editors benefit from this
   ];
 
   scripts = {
     # Docs: https://devenv.sh/scripts/
-    # yd.exec = ''yarn dev'';
+    # dev.exec = ''pnpm dev'';
   };
 
   difftastic.enable = true; # https://devenv.sh/integrations/difftastic/

@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05"; # or use /nixos-unstable to get latest packages, but maybe less caching
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable"; # latest packages, but you won't have the same (cached) packages across repos
     systems.url = "github:nix-systems/default"; # (i) allows overriding systems easily, see https://github.com/nix-systems/nix-systems#consumer-usage
     devenv.url = "github:cachix/devenv";
