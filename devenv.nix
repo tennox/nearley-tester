@@ -8,7 +8,10 @@
       enable = true; # source: https://github.com/cachix/devenv/blob/main/src/modules/languages/javascript.nix
       # remove whichever you don't need
       npm.enable = true;
-      pnpm.enable = true;
+      pnpm = {
+        enable = true;
+        package = latest.nodePackages.pnpm;
+      };
       yarn.enable = true;
     };
     typescript.enable = true;
