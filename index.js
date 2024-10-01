@@ -242,7 +242,8 @@ async function nearleyTester(options = {}) {
   function requireUncached(mod) {
     // delete require.cache[require.resolve(mod)]
     clearRequire.all();
-    return require(mod);
+    const imported = require(mod)
+    return imported.default ?? imported; // tolerate new-style (default export) or old-style
   }
 
   function runScript() {}
