@@ -41,7 +41,7 @@
     nil.enable = true; # nix check
     nixpkgs-fmt.enable = true; # nix formatting
     eslint = {
-      enable = true;
+      # enable = true; # disabled by default as it fails if no eslint config exists
       fail_fast = true; # skip other pre-commit hooks if this one fails
     };
   };
