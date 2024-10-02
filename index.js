@@ -128,11 +128,13 @@ async function nearleyTester(options = {}) {
 
   function parseTestFile(fileContent) {
     const splits = fileContent.split(testNamePattern);
+    // console.log({splits})
     const tests = [];
 
     for (i = 0; i < splits.length - 1; i = i + 2) {
       let code = splits[i + 2];
       const name = splits[i + 1];
+      // console.log({code,name})
 
       if (code[0] === "\n") {
         code = code.slice(1, code.length);
@@ -162,6 +164,7 @@ async function nearleyTester(options = {}) {
   function updateRawGrammar() {
     console.log("Reloading (raw) grammar...");
     execSync(`nearleyc <(grep -v '@preprocessor typescript' ${grammarFilePath}) -o ${tmpfile.name}`); // HACK: remove typescript preprocessor (not supported)
+    // console.log({grammarFilePath,tmpfile})
     state.grammar = requireUncached(tmpfile.name);
   }
 
@@ -176,9 +179,36 @@ async function nearleyTester(options = {}) {
     }
     Object.keys(state.tests).forEach(testFileName => {
       state.tests[testFileName].forEach(test => {
-        console.log(`\nRunning: ${test.name}`);
-        const results = parseCode(test.code);
-        console.log(displayJSON(results));
+        console.log(`\nRunning: ${test.name}`)
+        const results = parseCode(test.code)
+        if (results === null) return
+        
+        if (!options.expectFolder) {
+          console.log(displayJSON(results));
+        } else {
+          const expectPath = path.join(options.expectFolder, `${test.name}.yml`)
+          if (!fs.existsSync(expectPath)) {
+            console.log("Writing first result:", expectPath)
+            fs.outputFileSync(expectPath, displayJSON(results))
+          } else {
+            // console.log(results)
+            const tmpResultFile = tmp.fileSync({
+              postfix: ".yml",
+              prefix: "tmp-parsed-"
+            });
+            fs.writeFileSync(tmpResultFile.fd, displayJSON(results))
+            // console.log(`$ cat '${tmpResultFile.name}'`, execSync(`cat '${tmpResultFile.name}'`).toString())
+            // console.log(`$ cat '${expectPath}'`, execSync(`cat '${expectPath}'`).toString())
+            try {
+              // console.log(`$ diff '${expectPath}' '${tmpResultFile.name}'`)
+              const diff = execSync(`difft --color=always '${expectPath}' '${tmpResultFile.name}'`)
+              if (!diff.includes('No changes.'))
+              console.log(diff.toString())
+            } catch (error) {
+              // console.error(error, error.output)
+            }
+          }
+        }
       });
     });
   }
