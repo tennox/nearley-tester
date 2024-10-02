@@ -40,7 +40,7 @@ async function nearleyTester(options = {}) {
   const tmpfile = tmp.fileSync({
     // so that node_modules resolves relative to grammar source.
     dir: path.dirname(grammarFilePath),
-    postfix: ".js",
+    postfix: ".cjs",
     prefix: "tmp-parser-"
   });
 
