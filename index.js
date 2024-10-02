@@ -65,17 +65,17 @@ async function nearleyTester(options = {}) {
     const files = await getFilesFromGlobs(options.watchGlobPatterns);
     createWatcher(files, async () => {
       grammarUpdater();
-      await runTests();
+      await runTests(false);
     });
   }
 
   createWatcher(testFiles, async file => {
     await updateTest(file);
-    await runTests();
+    await runTests(false);
   });
 
   await updateTests();
-  await runTests();
+  await runTests(true);
 
   startWatchers();
 
@@ -159,7 +159,6 @@ async function nearleyTester(options = {}) {
   function updateRawGrammar() {
     console.log("Reloading (raw) grammar...");
     execSync(`nearleyc <(grep -v '@preprocessor typescript' ${grammarFilePath}) -o ${tmpfile.name}`); // HACK: remove typescript preprocessor (not supported)
-    console.log({grammarFilePath,tmpfile})
     state.grammar = requireUncached(tmpfile.name);
   }
 
@@ -167,7 +166,11 @@ async function nearleyTester(options = {}) {
     return fs.readFile(_path, "utf8");
   }
 
-  function runTests() {
+  function runTests(first) {
+    if (!first) {
+      console.clear()
+      console.log('=================== RE-RUN ===================\n')
+    }
     Object.keys(state.tests).forEach(testFileName => {
       state.tests[testFileName].forEach(test => {
         console.log(`\nRunning: ${test.name}`);
@@ -180,7 +183,7 @@ async function nearleyTester(options = {}) {
   function createGrammarWatcher(_path, updateGrammar) {
     const handleWatch = async () => {
       updateGrammar();
-      await runTests();
+      await runTests(false);
     };
 
     return createWatcher(_path, () => {
@@ -247,7 +250,7 @@ async function nearleyTester(options = {}) {
     return imported.default ?? imported; // tolerate new-style (default export) or old-style
   }
 
-  function runScript() {}
+  function runScript() { }
 }
 
 // windows support for SIGINT
