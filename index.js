@@ -141,6 +141,9 @@ async function nearleyTester(options = {}) {
       if (code[code.length - 1] === "\n") {
         code = code.slice(0, code.length - 1);
       }
+      if (code[code.length - 1] === "\n") {
+        code = code.slice(0, code.length - 1); // HACK: run again to allow empty line between
+      }
 
       tests.push({
         name,
