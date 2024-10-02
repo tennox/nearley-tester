@@ -158,7 +158,8 @@ async function nearleyTester(options = {}) {
 
   function updateRawGrammar() {
     console.log("Reloading (raw) grammar...");
-    execSync(`nearleyc ${grammarFilePath} -o ${tmpfile.name}`);
+    execSync(`nearleyc <(grep -v '@preprocessor typescript' ${grammarFilePath}) -o ${tmpfile.name}`); // HACK: remove typescript preprocessor (not supported)
+    console.log({grammarFilePath,tmpfile})
     state.grammar = requireUncached(tmpfile.name);
   }
 
