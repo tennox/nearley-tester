@@ -186,7 +186,7 @@ async function nearleyTester(options = {}) {
         if (!options.expectFolder) {
           console.log(displayJSON(results));
         } else {
-          const expectPath = path.join(options.expectFolder, `${test.name}.yml`)
+          const expectPath = path.join(options.expectFolder, `${test.name}.json`)
           if (!fs.existsSync(expectPath)) {
             console.log("Writing first result:", expectPath)
             fs.outputFileSync(expectPath, displayJSON(results))
@@ -269,7 +269,8 @@ async function nearleyTester(options = {}) {
 
   function displayJSON(obj) {
     if (!options.disablePrettyJson) {
-      return prettyjson.render(obj);
+      return JSON.stringify(obj, undefined, "\t")
+      // return prettyjson.render(obj, {noColor:true, inlineArrays:true});
     }
 
     return JSON.stringify(obj);
