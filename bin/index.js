@@ -7,6 +7,7 @@ const parsed = program
   .version(version)
   .usage('[options] <tests-glob>', 'Tests glob pattern')
   .option('-w, --watch-glob-patterns <patterns>', 'Additional glob patterns for grammar reload: "src/**,other/**"', list)
+  .option('--no-watch', 'Run once and exit')
   .option('-r, --raw-grammar <file>', 'Raw grammar file (eg: grammar.ne)')
   .option('-g, --grammar <file>', 'Compiled grammar file (eg: grammar.js)')
   .option('-e, --expect <folder>', 'Folder with expected resulting outputs')
@@ -17,6 +18,7 @@ const parsed = program
 if (!process.argv.slice(2).length) {
   program.outputHelp();
 } else {
+  // console.log(program)
   const options = {
     rawGrammarFile: program.rawGrammar,
     grammarFile: program.grammar,
@@ -24,7 +26,8 @@ if (!process.argv.slice(2).length) {
     testNamePattern: program.testNamePattern,
     watchGlobPatterns: program.watchGlobPatterns,
     testsGlobPattern: program.args[0],
-    disablePrettyJson: program.disablePrettyJson
+    disablePrettyJson: program.disablePrettyJson,
+    watch: program.watch,
   };
   
   nearleyTester(options);

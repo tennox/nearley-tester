@@ -56,28 +56,35 @@ async function nearleyTester(options = {}) {
   };
 
   const testFiles = await getFilesFromGlob(options.testsGlobPattern);
+  
   const grammarUpdater = options.grammarFile ? updateGrammar : updateRawGrammar;
-
-  createGrammarWatcher(grammarFilePath, grammarUpdater);
   grammarUpdater();
 
-  if (options.watchGlobPatterns) {
-    const files = await getFilesFromGlobs(options.watchGlobPatterns);
-    createWatcher(files, async () => {
-      grammarUpdater();
+  if (options.watch){ 
+    createGrammarWatcher(grammarFilePath, grammarUpdater);
+
+    if (options.watchGlobPatterns) {
+      const files = await getFilesFromGlobs(options.watchGlobPatterns);
+      createWatcher(files, async () => {
+        grammarUpdater();
+        await runTests(false);
+      });
+    }
+
+    createWatcher(testFiles, async file => {
+      await updateTest(file);
       await runTests(false);
     });
   }
 
-  createWatcher(testFiles, async file => {
-    await updateTest(file);
-    await runTests(false);
-  });
-
   await updateTests();
   await runTests(true);
 
-  startWatchers();
+  if (options.watch){
+    startWatchers();
+  } else {
+    process.exit(0)
+  }
 
   async function updateTests() {
     console.log("Reloading tests...");
